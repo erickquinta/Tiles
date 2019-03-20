@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SaveManager : Singleton<SaveManager> {
 	public SaveState state;
@@ -27,7 +28,9 @@ public class SaveManager : Singleton<SaveManager> {
 
 	public void OnApplicationPause(bool pauseStatus){
 		if(pauseStatus){
-			//Debug.Log("paused");
+			if(SceneManager.GetActiveScene().name == "Grid"){
+				GameManager.Instance.PauseGame();
+			}
 		}else{
 			//Debug.Log("resume");
 		}

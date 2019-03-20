@@ -42,6 +42,10 @@ public class LevelManager : Singleton<LevelManager> {
 		SetTotalPositiveTiles();
 		CreateTiles();
 	}
+	public void NextStage(){
+		
+	}
+
 	// counts up all the tiles in the "on" state (1) from the level list array
 	private void SetTotalPositiveTiles(){
 		//int[] item = new int[]{tile[0], tile[1]};

@@ -9,6 +9,7 @@ public class GameManager : Singleton<GameManager> {
 	[SerializeField] private Text moveCountLbl;
 	[SerializeField] private Text levelLbl;
 	[SerializeField] private Image pauseMenu;
+	private AudioSource audioSource;
 	private bool isPaused = false;
 	private int tileCount = 0;
 	private int positiveTiles = 0;
@@ -44,6 +45,7 @@ public class GameManager : Singleton<GameManager> {
 			currentLevel = value;
 		}
 	}
+	// TODO: could remove this since the score is saved to the SaveState
 	public int[] ScoreList{
 		get{
 			return scoreList;
@@ -51,8 +53,14 @@ public class GameManager : Singleton<GameManager> {
 			scoreList = value;
 		}
 	}
+	public AudioSource AudioSource{
+		get{
+			return audioSource;
+		}
+	}
 	void Start () {
-		
+		audioSource = GetComponent<AudioSource>();
+
 		// start the game on the selected level
 		currentLevel = PlayerPrefs.GetInt("selectedLevel");
 		if(currentLevel == 0){currentLevel = 1;}
@@ -67,6 +75,7 @@ public class GameManager : Singleton<GameManager> {
 	
 	}
 	public void TileClicked(int x, int y){
+		audioSource.PlayOneShot(SoundManager.Instance.ButtonClickFX);
 		moveCount += 1;
 		moveCountLbl.text = "Moves: " + moveCount.ToString();
 
@@ -157,6 +166,8 @@ public class GameManager : Singleton<GameManager> {
 	// add a small pause after completing level
 	// TODO: add some effect
 	IEnumerator CompleteLevelPause(){
+		audioSource.PlayOneShot(SoundManager.Instance.LevelCompleteFX);
+
 		// update the save state variables
 		int idx = (currentLevel - 1);
 		SaveManager.Instance.LastCompletedLevel = idx;
@@ -185,6 +196,11 @@ public class GameManager : Singleton<GameManager> {
 		LevelManager.Instance.StartLevel();
 		// pass the move count to the score list, at the same position as the level
 		scoreList[currentLevel] = moveCount;
+		//To Do:
+		//StageComplete();
+	}
+	private void StageComplete(){
+		LevelManager.Instance.NextStage();
 	}
 
 	public void PauseGame(){
